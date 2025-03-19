@@ -1,0 +1,377 @@
+<template>
+  <div class="games-container">
+    <h1 class="title">Upcoming & Today's Games</h1>
+
+    <div class="games-wrapper">
+      <!-- Right Section: Today's Games -->
+      <div v-if="showTodayGames" class="games-section">
+        <h2 class="section-title">Today's Games</h2>
+        <table class="games-table">
+          <thead>
+            <tr>
+              <th>Game ID</th>
+              <th>Sport</th>
+              <th>Game Date</th>
+              <th>Game Time</th>
+              <th>Home Team</th>
+              <th>Away Team</th>
+              <th>Address</th>
+              <th scope="col" colspan="2">Score</th>
+              <th scope="col" colspan="2">Status</th>        
+                            </tr>
+                            <tr>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" >Home</th>
+          <th scope="col" >Away</th>
+          <th scope="col" >Home</th>
+          <th scope="col" >Away</th>
+        </tr>
+          </thead>
+          
+          <tbody>
+            <tr v-for="game in todayGames" :key="game.id">
+              <td>{{ game.game_code_number }}</td>
+              <td>{{ game.sport.name }}</td>
+              <td>{{ formatDate(game.game_time_stamp) }}</td>
+              <td>{{ formatTime(game.game_time_stamp) }}</td>
+              <td>{{ game.school1.name }}</td>
+              <td>{{ game.school2.name }}</td>
+              <td>{{ game.game_address }}, {{ game.game_city }}</td>
+              <td>{{  getScore(game, 1) }}</td>
+              <td>{{  getScore(game, 2) }}</td>
+              <td>
+  <span v-if="getScore(game, 1) > getScore(game, 2)" class="btn btn-success" style="margin-left: 5px;">W</span>
+  <span v-if="getScore(game, 1) < getScore(game, 2)" class="btn btn-danger" style="margin-left: 5px;">L</span>
+</td>
+<td>
+  <span v-if="getScore(game, 2) > getScore(game, 1)" class="btn btn-success" style="margin-left: 5px;">W</span>
+  <span v-if="getScore(game, 2) < getScore(game, 1)" class="btn btn-danger" style="margin-left: 5px;">L</span>
+</td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Left Section: Upcoming Games -->
+      <div v-if="showUpcomingGames" class="games-section upcoming-section">
+        <h2 class="section-title">Upcoming Games</h2>
+        <table class="games-table">
+          <thead>
+            <tr>
+              <th>Game ID</th>
+              <th>Sport</th>
+              <th>Game Date</th>
+              <th>Game Time</th>
+              <th>Home Team</th>
+              <th>Away Team</th>
+              <th>Address</th>
+              <th scope="col" colspan="2">Score</th>
+              <th scope="col" colspan="2">Status</th>        
+                            </tr>
+                            <tr>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+          <th scope="col" >Home</th>
+          <th scope="col" >Away</th>
+          <th scope="col" >Home</th>
+          <th scope="col" >Away</th>
+        </tr>
+          </thead>
+          
+          <tbody>
+            <tr v-for="game in todayGames" :key="game.id">
+              <td>{{ game.game_code_number }}</td>
+              <td>{{ game.sport.name }}</td>
+              <td>{{ formatDate(game.game_time_stamp) }}</td>
+              <td>{{ formatTime(game.game_time_stamp) }}</td>
+              <td>{{ game.school1.name }}</td>
+              <td>{{ game.school2.name }}</td>
+              <td>{{ game.game_address }}, {{ game.game_city }}</td>
+              <td>{{ getScore(game, 1) }}</td>
+              <td>{{ getScore(game, 2) }}</td>
+              <td>
+  <span v-if="getScore(game, 1) > getScore(game, 2)" class="btn btn-success" style="margin-left: 5px;">W</span>
+  <span v-if="getScore(game, 1) < getScore(game, 2)" class="btn btn-danger" style="margin-left: 5px;">L</span>
+</td>
+<td>
+  <span v-if="getScore(game, 2) > getScore(game, 1)" class="btn btn-success" style="margin-left: 5px;">W</span>
+  <span v-if="getScore(game, 2) < getScore(game, 1)" class="btn btn-danger" style="margin-left: 5px;">L</span>
+</td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { ref, onMounted } from 'vue';
+
+export default {
+  setup() {
+    const upcomingGames = ref([]);
+    const todayGames = ref([]);
+    const showTodayGames = ref(false);  // Control visibility of Today's Games
+    const showUpcomingGames = ref(false);  // Control visibility of Upcoming Games
+
+    const fetchGames = async () => {
+      try {
+        const today = new Date().toISOString().split('T')[0];
+
+        // Fetch data for upcoming and today's games
+        const response = await fetch(`https://api.essleague.org/api/games/${today}`);
+        const data = await response.json();
+        upcomingGames.value = data.upcoming_games;
+        todayGames.value = data.today_games;
+
+        // Show Today's Games first
+        showTodayGames.value = true;
+
+        // Wait for a short time to let users focus on today's games before showing upcoming games
+        setTimeout(() => {
+          showUpcomingGames.value = true;
+        }, 2000); // Delay in milliseconds (e.g., 2 seconds before showing upcoming games)
+
+        console.log("Upcoming Games:", upcomingGames.value);
+        console.log("Today's Games:", todayGames.value);
+      } catch (error) {
+        console.error('Error fetching games:', error);
+      }
+    };
+
+    const formatDate = (dateString) => {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
+    const formatTime = (dateString) => {
+      const options = { hour: '2-digit', minute: '2-digit' };
+      return new Date(dateString).toLocaleTimeString(undefined, options);
+    };
+
+    const getScore = (game, teamNumber) => {
+  // Check if the game has results
+  if (game.results && game.results.length > 0) {
+    // Find the result that matches the current game's game_code_number
+    const result = game.results.find(result => result.game_code_number === game.game_code_number);
+    
+    if (result) {
+      console.log("Data", result);
+      // Return the score for the team, or 'Pending' if the score is not available
+      return result[`score_${teamNumber}`] !== undefined ? result[`score_${teamNumber}`] : 'Pending';
+    }
+  }
+  return 'Not Available';  // If no matching result is found or no results exist
+};
+
+ 
+
+    onMounted(fetchGames);
+
+    return {
+      upcomingGames,
+      todayGames,
+      formatDate,
+      formatTime,
+      getScore,
+      showTodayGames,
+      showUpcomingGames,
+    };
+  },
+};
+</script>
+
+<style scoped>
+.games-container {
+  padding: 50px 20px;
+  background-color: #1e1e1e;
+  color: #fff;
+  overflow-y: auto;  /* Ensures vertical scrolling if content exceeds the container's height */
+  min-height: 100vh;  /* Limits the height to 80% of the viewport height */
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../assets/image/logo-banner.jpeg') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  color: #fff;
+}
+
+.games-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-height: 70vh;  /* Limit the height to 70% of the viewport height */
+  overflow-y: auto;  /* Enable scrolling if content overflows vertically */
+}
+
+
+.games-section {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 25px;
+  border-radius: 12px;
+  max-height: 50vh;  /* Limit the height of each section to 50% of the viewport height */
+  overflow-y: auto;  /* Enable vertical scrolling for long content */
+}
+
+
+.section-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Table Styling */
+.games-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.games-table-container {
+  width: 100%;  /* Ensures the container takes up the full width of the parent */
+  overflow-x: auto;  /* Enable horizontal scrolling */
+}
+
+
+@media (max-width: 768px) {
+  .games-wrapper {
+    flex-direction: column;  /* Stack the sections vertically on smaller screens */
+    overflow-x: auto;  /* Allow horizontal scrolling if necessary */
+  }
+
+  .games-table-container {
+    width: 100%;
+    overflow-x: auto;  /* Ensure horizontal scrolling on small screens */
+  }
+
+  .title {
+    font-size: 2rem;  /* Smaller font size for the title on mobile */
+  }
+
+  .section-title {
+    font-size: 1.5rem;  /* Smaller font size for section titles */
+  }
+
+  .games-table th,
+  .games-table td {
+    padding: 8px;  /* Reduce padding for smaller screens */
+    font-size: 0.9rem;  /* Smaller font size for table content */
+  }
+
+  .btn {
+    padding: 5px 10px;  /* Adjust padding for buttons */
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .btn-success {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .btn-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+}
+
+
+
+.games-table th,
+.games-table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #fff;
+}
+
+.games-table th {
+  background-color: #f47c3c;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.games-table td {
+  background-color: #1e1e1e;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.games-table tr:nth-child(even) {
+  background-color: #555;
+}
+
+.games-table tr:hover {
+  background-color: #8DC73F;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .games-wrapper {
+    flex-direction: column;
+  }
+
+  .games-section {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .games-table th,
+  .games-table td {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+  .btn {
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+}
+
+</style>
