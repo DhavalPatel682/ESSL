@@ -1,6 +1,6 @@
 <template>
     <div class="footer-links">
-      <a href="/about-us">About Us</a>
+      <a href="/AboutUs">About Us</a>
       <span>|</span>
       <a href="/sponsors">Sponsors</a>
       <span>|</span>

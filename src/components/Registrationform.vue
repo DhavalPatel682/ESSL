@@ -118,18 +118,92 @@ export default {
 };
 </script>
 
-<style>
+<style>/* General form container */
+.form-container {
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 5px;
+  overflow: hidden; /* Prevent any overflow by default */
+}
+
+/* Ensure all inputs are block-level and take up full width */
 input, textarea {
   display: block;
-  margin-bottom: 10px;
-  padding: 8px;
   width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
+
+/* Style the submit button */
 button {
   background-color: green;
   color: white;
-  padding: 10px;
+  padding: 10px 10px;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
+  width: 100%;
 }
+
+/* Style for form fields container */
+.container-input {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Make the inputs responsive */
+.container-input input {
+  flex: 1 1 calc(100% - 10px); /* Default to 50% width with gap */
+}
+
+button {
+  width: auto; /* Make the submit button fit its content */
+  margin-top: 10px;
+  flex: 1 1 100%; /* Ensure it spans the full width */
+}
+
+/* Responsive adjustments for tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .container-input input {
+    flex: 1 1 calc(100% - 10px); /* Two columns on tablet */
+  }
+}
+
+/* Responsive adjustments for mobile (max-width: 768px) */
+@media (max-width: 768px) {
+  .container-input input {
+    flex: 1 1 100%; /* Single column on mobile */
+  }
+
+  button {
+    width: 100%; /* Full width button */
+  }
+}
+
+/* Adjustments for screens below 450px */
+@media (max-width: 450px) {
+  .form-container {
+    padding: 5px; /* Reduce padding */
+    margin: 0 5px; /* Reduce margins */
+    max-height: 100vh; /* Ensure the form container doesn't exceed viewport height */
+    overflow-y: auto; /* Enable scrolling when content overflows */
+  }
+
+  .container-input input {
+    padding: 5px; /* Reduce input padding */
+  }
+
+  button {
+    padding: 8px 5px; /* Reduce button padding */
+  }
+
+  /* Optional: If you want to limit the height of the form container */
+  .form-container {
+    height: 100%;
+  }
+}
+
 </style>

@@ -110,7 +110,6 @@ export default {
 <style scoped>
 .distriContainer {
   padding: 20px;
-  height:100vh;
   min-height: 500px;
   color:#fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */

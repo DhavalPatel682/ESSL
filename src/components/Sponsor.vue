@@ -138,13 +138,19 @@ export default {
   margin: 0 auto;
   flex-grow: 1; /* This ensures it grows to take available space */
 }
-
 @media (max-width: 768px) {
   .sponsors-content {
-    display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Mobile (max-width: 768px): Show 1 column */
+@media (max-width: 450px) {
+  .sponsors-content {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
 
 .sponsor-card:hover {
   transform: translateY(-5px);
