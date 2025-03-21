@@ -4,8 +4,16 @@
     <div class="games-wrapper">
       <!-- Right Section: Today's Games -->
 
+<<<<<<< HEAD
       
       <div v-if="showTodayGames && todayGames.length > 0" class="games-section">
+=======
+       <div v-if="!showUpcomingGames || !showTodayGames" class="no-games-container">
+    <h2>No Upcoming Games Today</h2>
+    <h5>It looks like there are no games scheduled for today. Please check back later for updates on upcoming events or explore our other available content!</h5>
+  </div>
+      <div v-if="showTodayGames" class="games-section">
+>>>>>>> a44918f045c45f5c7528580d9c436865c6aa0ae3
         <h2 class="section-title">Today's Games</h2>
 
  
@@ -165,11 +173,11 @@ export default {
         todayGames.value = data.past_games;
 
         // Show Today's Games first
-        showTodayGames.value = true;
+        showTodayGames.value = todayGames.value.length > 0;
 
         // Wait for a short time to let users focus on today's games before showing upcoming games
         setTimeout(() => {
-          showUpcomingGames.value = true;
+          showUpcomingGames.value = upcomingGames.value.length > 0;
         }, 2000); // Delay in milliseconds (e.g., 2 seconds before showing upcoming games)
 
         console.log("Upcoming Games:", upcomingGames.value);
@@ -296,6 +304,28 @@ const checkMobile = () => {
   overflow-y: auto;  /* Enable scrolling if content overflows vertically */
 }
 
+.no-games-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Full viewport height */
+  text-align: center;
+  padding: 20px;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #fff; /* Dark text color */
+  margin-bottom: 10px;
+}
+
+h5 {
+  font-size: 1.3rem;
+  font-weight: normal;
+  color: #eceae9; /* Lighter text color */
+  max-width: 600px;
+}
 
 .games-section {
   background: rgba(255, 255, 255, 0.1);
