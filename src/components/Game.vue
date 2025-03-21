@@ -1,12 +1,40 @@
 <template>
   <div class="games-container">
     <h1 class="title">Upcoming & Today's Games</h1>
-
     <div class="games-wrapper">
       <!-- Right Section: Today's Games -->
-      <div v-if="showTodayGames" class="games-section">
+
+      
+      <div v-if="showTodayGames && todayGames.length > 0" class="games-section">
         <h2 class="section-title">Today's Games</h2>
-        <table class="games-table">
+
+ 
+        <div class="games-table-container">
+          <!-- For mobile, use cards -->
+          <div v-if="isMobile" class="games-card-wrapper">
+            <div v-for="game in todayGames" :key="game.id" class="game-card">
+              <div class="game-card-header">
+                <h3>{{ game.sport.name }}</h3>
+                <p>{{ formatDate(game.game_time_stamp) }} - {{ formatTime(game.game_time_stamp) }}</p>
+              </div>
+              <div class="game-card-body">
+                <p><strong>{{ game.school1.name }}</strong> vs <strong>{{ game.school2.name }}</strong></p>
+                <p>{{ game.game_address }}, {{ game.game_city }}</p>
+                <div class="score-status">
+                  <p><strong>Home: </strong>{{ getScore(game, 1) }}</p>
+                  <p><strong>Away: </strong>{{ getScore(game, 2) }}</p>
+                  <div>
+                    <span v-if="getScore(game, 1) > getScore(game, 2)" class="btn btn-success">W</span>
+                    <span v-if="getScore(game, 1) < getScore(game, 2)" class="btn btn-danger">L</span>
+                    <span v-if="getScore(game, 2) > getScore(game, 1)" class="btn btn-success">W</span>
+                    <span v-if="getScore(game, 2) < getScore(game, 1)" class="btn btn-danger">L</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <table v-if="!isMobile" class="games-table">
           <thead>
             <tr>
               <th>Game ID</th>
@@ -17,79 +45,22 @@
               <th>Away Team</th>
               <th>Address</th>
               <th scope="col" colspan="2">Score</th>
-              <th scope="col" colspan="2">Status</th>        
-                            </tr>
-                            <tr>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" >Home</th>
-          <th scope="col" >Away</th>
-          <th scope="col" >Home</th>
-          <th scope="col" >Away</th>
-        </tr>
-          </thead>
-          
-          <tbody>
-            <tr v-for="game in todayGames" :key="game.id">
-              <td>{{ game.game_code_number }}</td>
-              <td>{{ game.sport.name }}</td>
-              <td>{{ formatDate(game.game_time_stamp) }}</td>
-              <td>{{ formatTime(game.game_time_stamp) }}</td>
-              <td>{{ game.school1.name }}</td>
-              <td>{{ game.school2.name }}</td>
-              <td>{{ game.game_address }}, {{ game.game_city }}</td>
-              <td>{{  getScore(game, 1) }}</td>
-              <td>{{  getScore(game, 2) }}</td>
-              <td>
-  <span v-if="getScore(game, 1) > getScore(game, 2)" class="btn btn-success" style="margin-left: 5px;">W</span>
-  <span v-if="getScore(game, 1) < getScore(game, 2)" class="btn btn-danger" style="margin-left: 5px;">L</span>
-</td>
-<td>
-  <span v-if="getScore(game, 2) > getScore(game, 1)" class="btn btn-success" style="margin-left: 5px;">W</span>
-  <span v-if="getScore(game, 2) < getScore(game, 1)" class="btn btn-danger" style="margin-left: 5px;">L</span>
-</td>
-
+              <th scope="col" colspan="2">Status</th>
             </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Left Section: Upcoming Games -->
-      <div v-if="showUpcomingGames" class="games-section upcoming-section">
-        <h2 class="section-title">Upcoming Games</h2>
-        <table class="games-table">
-          <thead>
             <tr>
-              <th>Game ID</th>
-              <th>Sport</th>
-              <th>Game Date</th>
-              <th>Game Time</th>
-              <th>Home Team</th>
-              <th>Away Team</th>
-              <th>Address</th>
-              <th scope="col" colspan="2">Score</th>
-              <th scope="col" colspan="2">Status</th>        
-                            </tr>
-                            <tr>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" ></th>
-          <th scope="col" >Home</th>
-          <th scope="col" >Away</th>
-          <th scope="col" >Home</th>
-          <th scope="col" >Away</th>
-        </tr>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col">Home</th>
+              <th scope="col">Away</th>
+              <th scope="col">Home</th>
+              <th scope="col">Away</th>
+            </tr>
           </thead>
-          
           <tbody>
             <tr v-for="game in todayGames" :key="game.id">
               <td>{{ game.game_code_number }}</td>
@@ -102,21 +73,75 @@
               <td>{{ getScore(game, 1) }}</td>
               <td>{{ getScore(game, 2) }}</td>
               <td>
-  <span v-if="getScore(game, 1) > getScore(game, 2)" class="btn btn-success" style="margin-left: 5px;">W</span>
-  <span v-if="getScore(game, 1) < getScore(game, 2)" class="btn btn-danger" style="margin-left: 5px;">L</span>
-</td>
-<td>
-  <span v-if="getScore(game, 2) > getScore(game, 1)" class="btn btn-success" style="margin-left: 5px;">W</span>
-  <span v-if="getScore(game, 2) < getScore(game, 1)" class="btn btn-danger" style="margin-left: 5px;">L</span>
-</td>
-
+                <span v-if="getScore(game, 1) > getScore(game, 2)" class="btn btn-success" style="margin-left: 5px;">W</span>
+                <span v-if="getScore(game, 1) < getScore(game, 2)" class="btn btn-danger" style="margin-left: 5px;">L</span>
+              </td>
+              <td>
+                <span v-if="getScore(game, 2) > getScore(game, 1)" class="btn btn-success" style="margin-left: 5px;">W</span>
+                <span v-if="getScore(game, 2) < getScore(game, 1)" class="btn btn-danger" style="margin-left: 5px;">L</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+      <!-- Left Section: Upcoming Games -->
+      <div v-if="showUpcomingGames && upcomingGames.length > 0" class="games-section upcoming-section">
+        <h2 class="section-title">Upcoming Games</h2>
+        <table class="games-table">
+          <thead>
+            <tr>
+              <th>Game ID</th>
+              <th>Sport</th>
+              <th>Game Date</th>
+              <th>Game Time</th>
+              <th>Home Team</th>
+              <th>Away Team</th>
+              <th>Address</th>
+              <th scope="col" colspan="2">Score</th>
+              <th scope="col" colspan="2">Status</th>
+            </tr>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col">Home</th>
+              <th scope="col">Away</th>
+              <th scope="col">Home</th>
+              <th scope="col">Away</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="game in upcomingGames" :key="game.id">
+              <td>{{ game.game_code_number }}</td>
+              <td>{{ game.sport.name }}</td>
+              <td>{{ formatDate(game.game_time_stamp) }}</td>
+              <td>{{ formatTime(game.game_time_stamp) }}</td>
+              <td>{{ game.school1.name }}</td>
+              <td>{{ game.school2.name }}</td>
+              <td>{{ game.game_address }}, {{ game.game_city }}</td>
+              <td>{{ getScore(game, 1) }}</td>
+              <td>{{ getScore(game, 2) }}</td>
+              <td>
+                <span v-if="getScore(game, 1) > getScore(game, 2)" class="btn btn-success" style="margin-left: 5px;">W</span>
+                <span v-if="getScore(game, 1) < getScore(game, 2)" class="btn btn-danger" style="margin-left: 5px;">L</span>
+              </td>
+              <td>
+                <span v-if="getScore(game, 2) > getScore(game, 1)" class="btn btn-success" style="margin-left: 5px;">W</span>
+                <span v-if="getScore(game, 2) < getScore(game, 1)" class="btn btn-danger" style="margin-left: 5px;">L</span>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
+  </div>
 </template>
+
 
 <script>
 import { ref, onMounted } from 'vue';
@@ -127,6 +152,7 @@ export default {
     const todayGames = ref([]);
     const showTodayGames = ref(false);  // Control visibility of Today's Games
     const showUpcomingGames = ref(false);  // Control visibility of Upcoming Games
+    const isMobile = ref(false); // To check if the device is mobile
 
     const fetchGames = async () => {
       try {
@@ -136,7 +162,7 @@ export default {
         const response = await fetch(`https://api.essleague.org/api/games/${today}`);
         const data = await response.json();
         upcomingGames.value = data.upcoming_games;
-        todayGames.value = data.today_games;
+        todayGames.value = data.past_games;
 
         // Show Today's Games first
         showTodayGames.value = true;
@@ -170,7 +196,6 @@ export default {
     const result = game.results.find(result => result.game_code_number === game.game_code_number);
     
     if (result) {
-      console.log("Data", result);
       // Return the score for the team, or 'Pending' if the score is not available
       return result[`score_${teamNumber}`] !== undefined ? result[`score_${teamNumber}`] : 'Pending';
     }
@@ -178,10 +203,19 @@ export default {
   return 'Not Available';  // If no matching result is found or no results exist
 };
 
+const checkMobile = () => {
+      isMobile.value = window.innerWidth <= 768;
+    };
+    
  
 
-    onMounted(fetchGames);
+    onMounted(() => {
+      fetchGames();
+      checkMobile();
+      console.error('Error fetching games:', isMobile.value);
 
+      window.addEventListener('resize', checkMobile);
+    });
     return {
       upcomingGames,
       todayGames,
@@ -196,6 +230,42 @@ export default {
 </script>
 
 <style scoped>
+
+/* Mobile Card Layout */
+.games-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.game-card {
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.game-card-header h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.game-card-body p {
+  font-size: 1rem;
+}
+
+.score-status {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.game-card .btn {
+  padding: 6px 12px;
+  font-size: 1rem;
+  border-radius: 4px;
+}
 .games-container {
   padding: 50px 20px;
   background-color: #1e1e1e;
