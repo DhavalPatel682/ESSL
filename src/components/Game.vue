@@ -4,16 +4,13 @@
     <div class="games-wrapper">
       <!-- Right Section: Today's Games -->
 
-<<<<<<< HEAD
       
       <div v-if="showTodayGames && todayGames.length > 0" class="games-section">
-=======
        <div v-if="!showUpcomingGames || !showTodayGames" class="no-games-container">
     <h2>No Upcoming Games Today</h2>
     <h5>It looks like there are no games scheduled for today. Please check back later for updates on upcoming events or explore our other available content!</h5>
   </div>
       <div v-if="showTodayGames" class="games-section">
->>>>>>> a44918f045c45f5c7528580d9c436865c6aa0ae3
         <h2 class="section-title">Today's Games</h2>
 
  
