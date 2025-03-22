@@ -6,7 +6,9 @@
      
       <div v-if="showTodayGames && todayGames.length > 0" class="games-section today-section"> 
                <h2 class="section-title">Today's Games</h2>
+      <!-- Right Section: Today's Games -->
 
+   
  
         <div class="games-table-container">
           <!-- For mobile, use cards -->
