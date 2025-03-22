@@ -2,19 +2,10 @@
   <div class="games-container">
     <h1 class="title">Upcoming & Today's Games</h1>
     <div class="games-wrapper">
-      <!-- Right Section: Today's Games -->
-
-<<<<<<< HEAD
-      
-      <div v-if="showTodayGames && todayGames.length > 0" class="games-section">
-=======
-       <div v-if="!showUpcomingGames || !showTodayGames" class="no-games-container">
-    <h2>No Upcoming Games Today</h2>
-    <h5>It looks like there are no games scheduled for today. Please check back later for updates on upcoming events or explore our other available content!</h5>
-  </div>
-      <div v-if="showTodayGames" class="games-section">
->>>>>>> a44918f045c45f5c7528580d9c436865c6aa0ae3
-        <h2 class="section-title">Today's Games</h2>
+      <!-- Right Section: Today's Games -->      
+     
+      <div v-if="showTodayGames && todayGames.length > 0" class="games-section today-section"> 
+               <h2 class="section-title">Today's Games</h2>
 
  
         <div class="games-table-container">
@@ -170,7 +161,7 @@ export default {
         const response = await fetch(`https://api.essleague.org/api/games/${today}`);
         const data = await response.json();
         upcomingGames.value = data.upcoming_games;
-        todayGames.value = data.past_games;
+        todayGames.value = data.today_games;
 
         // Show Today's Games first
         showTodayGames.value = todayGames.value.length > 0;
@@ -188,12 +179,14 @@ export default {
     };
 
     const formatDate = (dateString) => {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const options = { day: 'numeric', month: '2-digit', year: 'numeric' };
+      console.error('Error fetching games:', options);
+
       return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
     const formatTime = (dateString) => {
-      const options = { hour: '2-digit', minute: '2-digit' };
+      const options = { hour: '2-digit', minute: '2-digit',     hour12: false };
       return new Date(dateString).toLocaleTimeString(undefined, options);
     };
 
@@ -353,7 +346,6 @@ h5 {
 
 .games-table-container {
   width: 100%;  /* Ensures the container takes up the full width of the parent */
-  overflow-x: auto;  /* Enable horizontal scrolling */
 }
 
 
@@ -365,7 +357,6 @@ h5 {
 
   .games-table-container {
     width: 100%;
-    overflow-x: auto;  /* Ensure horizontal scrolling on small screens */
   }
 
   .title {
